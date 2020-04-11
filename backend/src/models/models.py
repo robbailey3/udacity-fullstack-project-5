@@ -40,20 +40,39 @@ def db_drop_and_create_all():
 class Actor(db.Model):
     __tablename__ = 'actors'
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True,
+                   autoincrement=True, nullable=False)
     name = db.Column(db.String)
     age = db.Column(db.Integer)
     gender = db.Column(db.String)
-    agent_id = db.Column(db.Integer, db.ForeignKey(
-        'Agent.id'), nullable=False)
+    headshot_url = db.Column(db.String)
+    agent_id = db.Column(db.Integer, db.ForeignKey('agents.id'))
+    agent = db.relationship("Agent", back_populates="actors")
 
-    def insert(self):
+    def format(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "age": self.age,
+            "gender": self.gender,
+            "headshot_url": self.headshot_url,
+            "agent_id": self.agent_id
+        }
+
+    def update(self):
         try:
-            db.session.add(self)
             db.session.commit()
         except:
             db.session.rollback()
-            return
+        finally:
+            db.session.close()
+
+    def delete(self):
+        try:
+            db.session.delete(self)
+            db.session.commit()
+        except:
+            db.session.rollback()
         finally:
             db.session.close()
 
@@ -63,16 +82,14 @@ class Movie(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String)
-    release_date = db.Column(db.Date)
+    release_date = db.Column(db.DateTime)
 
-    def insert(self):
-        try:
-            db.session.add(self)
-            db.session.commit()
-        except:
-            db.session.rollback()
-        finally:
-            db.session.close()
+    def format(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "release_date": self.release_date
+        }
 
     def update(self):
         try:
@@ -96,5 +113,33 @@ class Agent(db.Model):
     __tablename__ = 'agents'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Script)
-    actors = db.Column(db.relationship('Actor', backref='Agent', lazy=True))
+    name = db.Column(db.String)
+    actors = db.relationship('Actor')
+    phone_number = db.Column(db.String)
+    email = db.Column(db.String)
+
+    def format(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "actors": [actor.format() for actor in self.actors],
+            "phone_number": self.phone_number,
+            "email": self.email
+        }
+
+    def update(self):
+        try:
+            db.session.commit()
+        except:
+            db.session.rollback()
+        finally:
+            db.session.close()
+
+    def delete(self):
+        try:
+            db.session.delete(self)
+            db.session.commit()
+        except:
+            db.session.rollback()
+        finally:
+            db.session.close()
