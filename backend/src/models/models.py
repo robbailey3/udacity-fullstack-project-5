@@ -44,6 +44,8 @@ class Actor(db.Model):
     name = db.Column(db.String)
     age = db.Column(db.Integer)
     gender = db.Column(db.String)
+    agent_id = db.Column(db.Integer, db.ForeignKey(
+        'Agent.id'), nullable=False)
 
     def insert(self):
         try:
@@ -90,7 +92,9 @@ class Movie(db.Model):
             db.session.close()
 
 
-class Agency(db.Model):
-    __tablename__ = 'agencies'
+class Agent(db.Model):
+    __tablename__ = 'agents'
 
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.Script)
+    actors = db.Column(db.relationship('Actor', backref='Agent', lazy=True))
