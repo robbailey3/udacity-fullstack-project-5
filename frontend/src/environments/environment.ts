@@ -4,7 +4,13 @@
 
 export const environment = {
   production: false,
-  API_URL: 'http://localhost:5000'
+  API_URL: 'http://localhost:5000',
+  auth0: {
+    url: 'fsnd-capstone.eu',
+    audience: 'FSND-Capstone-API',
+    clientId: 'E4VCDqiXdE5PNRag5E6NA6Mdcria1Qef',
+    callbackURL: 'http://localhost:4200'
+  }
 };
 
 /*

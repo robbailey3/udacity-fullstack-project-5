@@ -1,1 +1,25 @@
-<p>agents-list works!</p>
+<div id="agents-list" class="flex-container content-width" *ngIf="agents">
+  <ng-container *ngFor="let agent of agents"
+    ><app-card class="col-md-4">
+      <h2>{{ agent.name }}</h2>
+      <h3>ID: {{ agent.id }}</h3>
+      <div class="agent-details">
+        <p *ngIf="agent.phone_number">
+          <strong>Tel: </strong>{{ agent.phone_number }}
+        </p>
+        <p *ngIf="agent.email"><strong>Email: </strong>{{ agent.email }}</p>
+      </div>
+      <div class="agent-actors" *ngIf="agent.actors.length > 0">
+        <h3>Actors</h3>
+        <ul>
+          <li class="actor" *ngFor="let actor of agent.actors">
+            <a [routerLink]="['/actors', actor.id]">{{ actor.name }}</a>
+          </li>
+        </ul>
+      </div>
+    </app-card>
+  </ng-container>
+  <div class="actions col-xs-12">
+    <a [routerLink]="['create']" class="btn btn-primary">Create</a>
+  </div>
+</div>

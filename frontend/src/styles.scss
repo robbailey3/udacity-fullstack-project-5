@@ -1,1 +1,17 @@
 /* You can add global styles to this file, and also import other style files */
+@import '~normalize.css';
+@import './styles/grid';
+@import './styles/typography';
+@import './styles/buttons';
+@import './styles/tables';
+@import './styles/form-items';
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+}

@@ -1,0 +1,22 @@
+.form-group {
+  display: block;
+  margin: 1rem 0;
+  label {
+    display: block;
+  }
+  input[type='text'],
+  input[type='date'],
+  textarea,
+  select {
+    display: block;
+    border: 1px solid #dfdfdf;
+    border-radius: 8px;
+    padding: 7px 12px;
+    width: 100%;
+    max-width: 400px;
+  }
+  input[type='range'] {
+    width: 100%;
+    max-width: 400px;
+  }
+}

@@ -1,0 +1,14 @@
+.card {
+  box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.175);
+  border: 1px solid #cecece;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.card-image {
+  img {
+    width: 100%;
+  }
+}
+.card-content {
+  padding: 1rem;
+}

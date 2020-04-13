@@ -9,14 +9,16 @@ import { AuthModule } from './auth/auth.module';
 import { ActorsModule } from './actors/actors.module';
 import { AgentsModule } from './agents/agents.module';
 import { MoviesModule } from './movies/movies.module';
+import { HomepageModule } from './homepage/homepage.module';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
+    SharedModule,
     BrowserModule,
     AppRoutingModule,
     GlobalModule,
-    SharedModule,
+    HomepageModule,
     AuthModule,
     ActorsModule,
     AgentsModule,

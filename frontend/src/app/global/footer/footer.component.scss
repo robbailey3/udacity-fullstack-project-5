@@ -1,0 +1,11 @@
+@import '../../../styles/colours';
+#page-footer {
+  padding: 2rem 0;
+  background: color(primary, dark);
+  #footer-wrapper {
+    padding: 1rem;
+  }
+  .copyright {
+    color: #fafafa;
+  }
+}

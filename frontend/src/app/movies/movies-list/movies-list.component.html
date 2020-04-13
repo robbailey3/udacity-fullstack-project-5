@@ -1,1 +1,37 @@
-<p>movies-list works!</p>
+<div id="movies-list" *ngIf="movies">
+  <div id="movies-wrapper" class="flex-container content-width">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Release Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let movie of movies">
+          <td>{{ movie.title }}</td>
+          <td>{{ movie.release_date }}</td>
+          <td>
+            <div class="btn-group">
+              <a class="btn btn-primary" [routerLink]="[movie.id]">View</a
+              ><a
+                class="btn btn-secondary"
+                [routerLink]="[movie.id, 'edit']"
+                *ngIf="authService.hasPermission('patch:movies')"
+                >Edit</a
+              >
+              <a
+                class="btn btn-danger"
+                (click)="deleteMovie(movie.id)"
+                *ngIf="authService.hasPermission('delete:movies')"
+                >Delete</a
+              >
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <a [routerLink]="['create']" class="btn btn-primary">Create</a>
+  </div>
+</div>

@@ -1,0 +1,49 @@
+<div id="actor-edit">
+  <form id="movie-form" class="content-width" #form="ngForm">
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" name="name" [(ngModel)]="actor.name" required />
+    </div>
+    <div class="form-group">
+      <label for="age">Age</label
+      ><input type="text" name="age" [(ngModel)]="actor.age" />
+    </div>
+    <div class="form-group">
+      <label for="gender">Gender</label>
+      <select name="gender" id="gender" [(ngModel)]="actor.gender">
+        <option value="male" selected="actor.gender === 'male'">Male</option>
+        <option value="female" selected="actor.gender === 'female'"
+          >Female</option
+        >
+        <option value="other" selected="actor.gender === 'other'">Other</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="headshot_url">Headshot URL</label
+      ><input
+        type="text"
+        name="headshot_url"
+        [(ngModel)]="actor.headshot_url"
+      />
+    </div>
+    <div class="form-group">
+      <label for="agent_id">Agent ID</label
+      ><input type="text" name="agent_id" [(ngModel)]="actor.agent_id" />
+    </div>
+    <div class="form-group">
+      <label for="movies">Movies</label>
+      <select type="text" name="movies" [(ngModel)]="actor.movies" multiple>
+        <option [value]="movie.id" *ngFor="let movie of movies">{{
+          movie.title
+        }}</option>
+      </select>
+    </div>
+    <input
+      type="submit"
+      value="Submit"
+      class="btn btn-primary"
+      [disabled]="!form.valid"
+      (click)="submitForm()"
+    />
+  </form>
+</div>

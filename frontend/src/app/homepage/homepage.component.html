@@ -1,1 +1,46 @@
-<p>homepage works!</p>
+<section id="banner">
+  <div id="banner-overlay"></div>
+  <div id="banner-content">
+    <h1 id="tagline">
+      Finding tolerable actors for your movie
+    </h1>
+    <p class="quotation">
+      "They weren't the worst casting agency we've worked with"
+      <span class="quotation-attributation">Walt Disney Studios.</span>
+    </p>
+  </div>
+</section>
+<section id="featured-actors">
+  <div class="section-wrapper flex-container content-width" *ngIf="actors">
+    <h2>Featured Actors</h2>
+    <ng-container *ngFor="let actor of actors">
+      <app-card
+        class="col-md-4 col-xs-12"
+        [headerImage]="actor.headshot_url"
+        [backgroundColor]="'#f7fff7'"
+      >
+        <h3>
+          <a [routerLink]="['actors', actor.id]">{{ actor.name }}</a>
+        </h3>
+        <p><strong>Age: </strong>{{ actor.age }}</p>
+        <p><strong>Gender: </strong>{{ actor.gender }}</p>
+      </app-card></ng-container
+    >
+  </div>
+</section>
+<section id="featured-movies" *ngIf="movies">
+  <div class="section-wrapper flex-container content-width">
+    <h2>Featured Movies</h2>
+    <ng-container *ngFor="let movie of movies">
+      <app-card class="col-sm-4 col-xs-12"
+        ><h3>
+          <a [routerLink]="['movies', movie.id]">{{ movie.title }}</a>
+        </h3>
+        <p>
+          <strong>Release Date: </strong
+          >{{ movie.release_date | date: 'fullDate' }}
+        </p></app-card
+      >
+    </ng-container>
+  </div>
+</section>

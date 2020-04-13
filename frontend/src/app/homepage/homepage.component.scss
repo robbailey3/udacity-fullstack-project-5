@@ -1,0 +1,64 @@
+@import '../../styles/grid';
+@import '../../styles/colours';
+#banner {
+  overflow: hidden;
+  background-image: url('/assets/images/banner.jpg');
+  background-position: center;
+  background-size: cover;
+  position: relative;
+  #banner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(2, 2, 34, 0.5);
+  }
+  #banner-content {
+    padding: 3rem 0;
+    width: auto;
+    max-width: 1000px;
+    margin: auto;
+    text-align: center;
+    position: relative;
+    z-index: 99;
+    h1 {
+      color: #fff;
+      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+      @include breakpoint(md) {
+        font-size: 4rem;
+      }
+    }
+    p {
+      font-style: italic;
+      color: #fff;
+      @include breakpoint(md) {
+        font-size: 1.6rem;
+      }
+      .quotation-attributation {
+        display: block;
+        @include breakpoint(md) {
+          font-size: 1.4rem;
+        }
+      }
+    }
+  }
+}
+.section-wrapper {
+  padding: 4rem 0;
+  h2 {
+    width: 100%;
+    font-size: 2rem;
+  }
+}
+#featured-actors {
+  background: color(primary);
+  h2 {
+    color: #fff;
+  }
+  h3 a {
+    color: #111;
+    text-decoration: none;
+    font-size: 1.6rem;
+  }
+}

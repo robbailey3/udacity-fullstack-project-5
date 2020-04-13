@@ -1,0 +1,29 @@
+@import '../../../styles/colours';
+nav {
+  display: block;
+  ul {
+    display: block;
+    padding: 0;
+    margin: 0;
+    text-align: right;
+  }
+  li {
+    list-style: none;
+    display: inline-block;
+  }
+  a {
+    display: block;
+    padding: 8px 14px;
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    &.active {
+      color: color(light-accent);
+    }
+    &:hover,
+    &:focus {
+      opacity: 0.9;
+      text-decoration: underline;
+    }
+  }
+}

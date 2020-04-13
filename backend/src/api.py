@@ -2,7 +2,7 @@ import os
 from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_swagger_ui import get_swaggerui_blueprint
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from flask_swagger import swagger
 from .models.models import db_drop_and_create_all, setup_db, db, Actor, Agent, Movie
 from .exceptions import BadRequestException
@@ -13,7 +13,7 @@ def create_app(test_config=None):
 
     app = Flask(__name__)
     setup_db(app)
-    CORS(app)
+    CORS(app, supports_credentials=True)
     SWAGGER_URL = '/docs'
     API_URL = 'http://localhost:5000'
 
@@ -60,7 +60,10 @@ def create_app(test_config=None):
           200:
             description: Returns an array of actors
         '''
-        actors = Actor.query.all()
+        page_size = int(request.args.get('page-size', 50))
+        offset = int(request.args.get('offset', 0))
+        actors = Actor.query.order_by(Actor.id.desc()).all()
+        actors = actors[offset:(page_size + offset)]
         actors = [actor.format() for actor in actors]
         return jsonify({"result": actors, "timestamp": time.time(), "success": True})
 
@@ -76,7 +79,10 @@ def create_app(test_config=None):
           200:
             description: Returns an array of Movies
         '''
-        movies = Movie.query.all()
+        page_size = int(request.args.get('page-size', 50))
+        offset = int(request.args.get('offset', 0))
+        movies = Movie.query.order_by(Movie.id.desc()).all()
+        movies = movies[offset:(page_size+offset)]
         movies = [movie.format() for movie in movies]
         return jsonify({"result": movies, "timestamp": time.time(), "success": True})
 
@@ -92,7 +98,10 @@ def create_app(test_config=None):
           200:
             description: Returns an array of Agents
         '''
-        agents = Agent.query.all()
+        page_size = int(request.args.get('page-size', 50))
+        offset = int(request.args.get('offset', 0))
+        agents = Agent.query.order_by(Agent.id.desc()).all()
+        agents = agents[offset:(page_size+offset)]
         agents = [agent.format() for agent in agents]
         return jsonify({"result": agents, "timestamp": time.time(), "success": True})
 
@@ -172,26 +181,61 @@ def create_app(test_config=None):
 
     @app.route('/actors', methods=["POST"])
     def create_new_actor():
+        '''
+        Create a new Actor
+        ---
+        tags:
+          - Actors
+        parameters:
+            - name: name
+              in: body
+              required: true
+              type: string
+            - name: age
+              in: body
+              required: true
+              type: number
+
+        responses:
+          200:
+            description: Returns a single Agent
+        '''
         try:
             body = request.get_json()
+
             if body is None:
                 raise BadRequestException()
+
             user_input = {
                 "name": body.get('name', None),
                 "age": body.get('age', None),
                 "gender": body.get('gender', None),
                 "headshot_url": body.get('headshot_url', None),
-                "agent_id": body.get('agent_id', None)
+                "agent_id": body.get('agent_id', None),
+                "movies": body.get('movies', None)
             }
+
+            movies = []
+            if(user_input['movies'] is not None):
+                for movie_id in user_input['movies']:
+                    movie = Movie.query.filter(Movie.id == movie_id).first()
+                    if movie is None:
+                        raise BadRequestException(
+                            'Movie %i not found' % (movie_id))
+                    movies.append(movie)
+
             actor = Actor(name=user_input['name'], age=user_input['age'], gender=user_input['gender'],
-                          headshot_url=user_input['headshot_url'], agent_id=user_input['agent_id'])
+                          headshot_url=user_input['headshot_url'], agent_id=user_input['agent_id'], movies=movies)
+
             db.session.add(actor)
             db.session.commit()
             return jsonify({"success": True, "result": actor.format(), "timestamp": time.time()}), 201
         except BadRequestException as err:
             abort(400)
         except Exception as err:
+            print(err)
             db.session.rollback()
+            raise(err)
             return jsonify({"success": False}), 500
         finally:
             db.session.close()
@@ -233,10 +277,12 @@ def create_app(test_config=None):
 
             user_input = {
                 "title": body.get('title', None),
-                "release_date": body.get('release_date', None)
+                "release_date": body.get('release_date', None),
+                "synopsis": body.get('synopsis', None),
+                "rating": body.get('rating', None),
             }
             movie = Movie(
-                title=user_input['title'], release_date=user_input['release_date'])
+                title=user_input['title'], release_date=user_input['release_date'], synopsis=user_input['synopsis'], rating=user_input['rating'])
 
             db.session.add(movie)
             db.session.commit()
@@ -250,6 +296,7 @@ def create_app(test_config=None):
             db.session.close()
 
     @app.route('/actors/<int:id>', methods=["PATCH"])
+    @cross_origin()
     def update_actor(id):
         try:
             body = request.get_json()
@@ -276,7 +323,7 @@ def create_app(test_config=None):
             actor.headshot_url = user_input['headshot_url'],
             actor.agent_id = user_input['agent_id']
 
-            actor.update()
+            db.session.commit()
 
             return jsonify({"success": True, "result": actor.format(), "timestamp": time.time()}), 200
 
@@ -310,7 +357,7 @@ def create_app(test_config=None):
             agent.phone_number = user_input['phone_number']
             agent.email = user_input['email']
 
-            agent.update()
+            db.session.commit()
 
             return jsonify({"success": True, "result": agent.format(), "timestamp": time.time()}), 200
 
@@ -336,13 +383,17 @@ def create_app(test_config=None):
 
             user_input = {
                 "title": body.get('title', movie.title),
-                "release_date": body.get('release_date', movie.release_date)
+                "release_date": body.get('release_date', movie.release_date),
+                "synopsis": body.get('synopsis', movie.synopsis),
+                "rating": body.get('rating', movie.rating),
             }
 
             movie.title = user_input['title']
             movie.release_date = user_input['release_date']
+            movie.synopsis = user_input['synopsis']
+            movie.rating = user_input['rating']
 
-            movie.update()
+            db.session.commit()
 
             return jsonify({"success": True, "result": movie.format(), "timestamp": time.time()}), 200
 

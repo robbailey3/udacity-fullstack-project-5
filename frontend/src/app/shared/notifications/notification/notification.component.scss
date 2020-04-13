@@ -1,0 +1,21 @@
+.notification {
+  width: 400px;
+  padding: 0.4rem 0.8rem;
+  background: #fff;
+  border-radius: 8px;
+  p {
+    margin: 0;
+  }
+  &.success {
+    background: green;
+    color: #fff;
+  }
+  &.error {
+    background: red;
+    color: #fff;
+  }
+  &.info {
+    background: orange;
+    color: #fff;
+  }
+}

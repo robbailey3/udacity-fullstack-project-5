@@ -1,0 +1,21 @@
+@import './colours';
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 4rem;
+  thead {
+    background: color(primary);
+    th {
+      color: #fff;
+    }
+  }
+  tbody {
+    td {
+      border: 1px solid #cfcfcf;
+      padding: 4px;
+    }
+  }
+}

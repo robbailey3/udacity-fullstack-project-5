@@ -1,0 +1,7 @@
+<div
+  class="notification"
+  [class]="notification.type"
+  *ngIf="notification.state === 'active'"
+>
+  <p>{{ notification.message }}</p>
+</div>

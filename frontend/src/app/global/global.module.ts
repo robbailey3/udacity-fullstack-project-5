@@ -3,10 +3,11 @@ import { CommonModule } from '@angular/common';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { NavigationComponent } from './navigation/navigation.component';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [HeaderComponent, FooterComponent, NavigationComponent],
   exports: [HeaderComponent, FooterComponent, NavigationComponent],
-  imports: [CommonModule]
+  imports: [CommonModule, RouterModule]
 })
 export class GlobalModule {}

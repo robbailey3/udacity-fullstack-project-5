@@ -1,0 +1,74 @@
+$primary: #0a192d;
+$secondary: #134074;
+$light-accent: #59f8e8;
+$dark-accent: #364652;
+$dark: #041b15;
+$light: #f7fff7;
+
+$colorScheme: (
+  'primary': (
+    'default': $primary,
+    'light': lighten($primary, 15%),
+    'lighter': lighten($primary, 30%),
+    'lightest': lighten($primary, 45%),
+    'dark': darken($primary, 3%),
+    'darker': darken($primary, 5%),
+    'darkest': darken($primary, 10%)
+  ),
+  'secondary': (
+    'default': $secondary,
+    'light': lighten($secondary, 15%),
+    'lighter': lighten($secondary, 30%),
+    'lightest': lighten($secondary, 45%),
+    'dark': darken($secondary, 15%),
+    'darker': darken($secondary, 30%),
+    'darkest': darken($secondary, 45%)
+  ),
+  'light-accent': (
+    'default': $light-accent,
+    'light': lighten($light-accent, 15%),
+    'lighter': lighten($light-accent, 30%),
+    'lightest': lighten($light-accent, 45%),
+    'dark': darken($light-accent, 15%),
+    'darker': darken($light-accent, 30%),
+    'darkest': darken($light-accent, 45%)
+  ),
+  'dark-accent': (
+    'default': $dark-accent,
+    'light': lighten($dark-accent, 15%),
+    'lighter': lighten($dark-accent, 30%),
+    'lightest': lighten($dark-accent, 45%),
+    'dark': darken($dark-accent, 15%),
+    'darker': darken($dark-accent, 30%),
+    'darkest': darken($dark-accent, 45%)
+  ),
+  'dark': (
+    'default': $dark,
+    'light': lighten($dark, 15%),
+    'lighter': lighten($dark, 30%),
+    'lightest': lighten($dark, 45%),
+    'dark': darken($dark, 15%),
+    'darker': darken($dark, 30%),
+    'darkest': darken($dark, 45%)
+  ),
+  'light': (
+    'default': #faf9fc,
+    'light': lighten(#faf9fc, 10%),
+    'dark': darken(#faf9fc, 15%),
+    'darker': darken(#faf9fc, 30%),
+    'darkest': darken(#faf9fc, 35%)
+  )
+);
+
+@function color($colorName, $colorVariant: 'default', $opacity: 1) {
+  @if map-has-key($colorScheme, $colorName) {
+    $color: map-get($colorScheme, $colorName);
+    @if map-has-key($color, $colorVariant) {
+      @return rgba(map-get($color, $colorVariant), $opacity);
+    }
+    @warn "unknown tone `#{$colorVariant}` in color";
+    @return null;
+  }
+  @warn "unknown color `#{$color}` in palette";
+  @return null;
+}

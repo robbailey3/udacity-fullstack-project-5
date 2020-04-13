@@ -1,0 +1,20 @@
+<div *ngIf="actor" id="actor-profile">
+  <div id="profile-wrapper" class="content-width flex-container">
+    <h1>{{ actor.name }}</h1>
+    <div class="col-md-6" id="actor-details">
+      <p><strong>Age: </strong>{{ actor.age }}</p>
+      <p><strong>Gender: </strong>{{ actor.gender }}</p>
+    </div>
+    <div class="col-md-6" id="profile-image-container">
+      <img
+        [src]="actor.headshot_url"
+        [alt]="actor.name"
+        class="actor-profile"
+      />
+    </div>
+    <div class="col-md-12 flex-container" *ngIf="actor.movies.length > 0">
+      <h2>Starred In</h2>
+      <div class="starred-in-movie" *ngFor="let movie of actor.movies"></div>
+    </div>
+  </div>
+</div>
