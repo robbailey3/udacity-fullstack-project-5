@@ -18,7 +18,7 @@ def create_app(test_config=None):
     API_URL = 'http://localhost:5000'
 
     swaggerui_blueprint = get_swaggerui_blueprint(SWAGGER_URL, API_URL, config={  # Swagger UI config overrides
-        'app_name': 'Hello World'
+        'app_name': 'Capstone'
 
     })
 
