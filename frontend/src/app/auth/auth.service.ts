@@ -38,10 +38,12 @@ export class AuthService {
     // Token doesn't exist or it has expired
     this.token = this.getTokenFromLocalStorage();
     if (this.token && !this.tokenHasExpired) {
+      this.saveToken();
       return this.token;
     }
     this.token = this.getTokenFromURL();
     if (this.token && !this.tokenHasExpired) {
+      this.saveToken();
       return this.token;
     }
   }
@@ -65,6 +67,11 @@ export class AuthService {
       return false;
     }
     return this.payload.exp / 1000 >= Date.now();
+  }
+
+  public saveToken() {
+    localStorage.setItem(this.JWT_STORAGE, this.token);
+    console.log(this.token);
   }
 
   public hasPermission(permission: string) {

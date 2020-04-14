@@ -213,18 +213,28 @@ def create_app(test_config=None):
         tags:
           - Actors
         parameters:
-            - name: name
-              in: body
-              required: true
-              type: string
-            - name: age
-              in: body
-              required: true
-              type: number
-
+          - name: Actor
+            in: body
+            schema:
+              type: object
+              properties:
+                name:
+                    type: string
+                age:
+                    type: number
+                gender:
+                    type: string
+                headshot_url:
+                    type: string
+                agent_id:
+                    type: number
+                movies:
+                    type: array
+                    items:
+                        type: number
         responses:
-          200:
-            description: Returns a single Agent
+          201:
+            description: Returns the new Actor
         '''
         try:
             body = request.get_json()
@@ -269,6 +279,28 @@ def create_app(test_config=None):
     @app.route('/agents', methods=["POST"])
     @requires_auth('post:agents')
     def create_new_agent():
+        '''
+        Create a new Agent
+        ---
+        tags:
+          - Agents
+        parameters:
+          - name: Agent
+            in: body
+            schema:
+              type: object
+              properties:
+                name:
+                    type: string
+                email:
+                    type: string
+                phone_number:
+                    type: string
+
+        responses:
+          201:
+            description: Returns the new Agent
+        '''
         try:
             body = request.get_json()
 
@@ -298,6 +330,30 @@ def create_app(test_config=None):
     @app.route('/movies', methods=["POST"])
     @requires_auth('post:movies')
     def create_new_movie():
+        '''
+        Create a new Movie
+        ---
+        tags:
+          - Movies
+        parameters:
+          - name: Movie
+            in: body
+            schema:
+              type: object
+              properties:
+                title:
+                    type: string
+                release_date:
+                    type: date
+                synopsis:
+                    type: string
+                rating:
+                    type: number
+
+        responses:
+          201:
+            description: Returns the new Movie
+        '''
         try:
             body = request.get_json()
 
@@ -327,6 +383,38 @@ def create_app(test_config=None):
     @app.route('/actors/<int:id>', methods=["PATCH"])
     @requires_auth('patch:actors')
     def update_actor(id):
+        '''
+        Update an existing Actor
+        ---
+        tags:
+          - Actors
+        parameters:
+          - name: id
+            in: path
+            type: number
+          - name: Actor
+            in: body
+            schema:
+              type: object
+              properties:
+                name:
+                    type: string
+                age:
+                    type: number
+                gender:
+                    type: string
+                headshot_url:
+                    type: string
+                agent_id:
+                    type: number
+                movies:
+                    type: array
+                    items:
+                        type: number
+        responses:
+          200:
+            description: Returns the updated Actor
+        '''
         try:
             body = request.get_json()
 
@@ -334,7 +422,6 @@ def create_app(test_config=None):
                 abort(400)
 
             actor = Actor.query.filter(Actor.id == id).first()
-
             if actor is None:
                 abort(400)
 
@@ -367,6 +454,31 @@ def create_app(test_config=None):
     @app.route('/agents/<int:id>', methods=["PATCH"])
     @requires_auth('patch:agents')
     def update_agent(id):
+        '''
+        Update an existing Agent
+        ---
+        tags:
+          - Agents
+        parameters:
+          - name: id
+            in: path
+            type: number
+          - name: Agent
+            in: body
+            schema:
+              type: object
+              properties:
+                name:
+                    type: string
+                email:
+                    type: string
+                phone_number:
+                    type: string
+
+        responses:
+          200:
+            description: Returns the updated Agent
+        '''
         try:
             body = request.get_json()
 
@@ -403,6 +515,33 @@ def create_app(test_config=None):
     @app.route('/movies/<int:id>', methods=["PATCH"])
     @requires_auth('patch:movies')
     def update_movie(id):
+        '''
+        Update an existing Movie
+        ---
+        tags:
+          - Movies
+        parameters:
+          - name: id
+            in: path
+            type: number
+          - name: Movie
+            in: body
+            schema:
+              type: object
+              properties:
+                title:
+                    type: string
+                release_date:
+                    type: date
+                synopsis:
+                    type: string
+                rating:
+                    type: number
+
+        responses:
+          200:
+            description: Returns the updated Movie
+        '''
         try:
             body = request.get_json()
 
@@ -441,6 +580,19 @@ def create_app(test_config=None):
     @app.route('/actors/<int:id>', methods=["DELETE"])
     @requires_auth('delete:actors')
     def delete_actor(id):
+        '''
+        Delete an Actor
+        ---
+        tags:
+          - Actors
+        parameters:
+          - name: id
+            in: path
+            type: number
+        responses:
+          200:
+            description: Returns successful
+        '''
         try:
             actor = Actor.query.filter(Actor.id == id).first()
             if actor is None:
@@ -461,6 +613,19 @@ def create_app(test_config=None):
     @app.route('/agents/<int:id>', methods=["DELETE"])
     @requires_auth('delete:agents')
     def delete_agent(id):
+        '''
+        Delete an Agent
+        ---
+        tags:
+          - Agents
+        parameters:
+          - name: id
+            in: path
+            type: number
+        responses:
+          200:
+            description: Returns successful
+        '''
         try:
             agent = Agent.query.filter(Agent.id == id).first()
             if agent is None:
@@ -481,6 +646,19 @@ def create_app(test_config=None):
     @app.route('/movies/<int:id>', methods=["DELETE"])
     @requires_auth('delete:movies')
     def delete_movie(id):
+        '''
+        Delete a Movie
+        ---
+        tags:
+          - Movies
+        parameters:
+          - name: id
+            in: path
+            type: number
+        responses:
+          200:
+            description: Returns successful
+        '''
         try:
             movie = Movie.query.filter(Movie.id == id).first()
             if movie is None:
