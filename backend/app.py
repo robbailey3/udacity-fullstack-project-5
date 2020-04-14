@@ -536,13 +536,13 @@ def create_app(test_config=None):
             "message": str(error)
         }), 400
 
-    # @app.errorhandler(AuthError)
-    # def user_is_unauthenticated(error):
-    #     return jsonify({
-    #         "success": False,
-    #         "error": 401,
-    #         "message": "User not authenticated"
-    #     }), 401
+    @app.errorhandler(AuthError)
+    def user_is_unauthenticated(error):
+        return jsonify({
+            "success": False,
+            "error": 401,
+            "message": "User not authenticated"
+        }), 401
     return app
 
 
