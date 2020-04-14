@@ -6,7 +6,7 @@ from flask_cors import CORS, cross_origin
 from flask_swagger import swagger
 from models import db_drop_and_create_all, setup_db, db, Actor, Agent, Movie
 from exceptions import BadRequestException
-from auth import requires_auth
+from auth import requires_auth, AuthError
 import time
 
 
@@ -62,12 +62,15 @@ def create_app(test_config=None):
           200:
             description: Returns an array of actors
         '''
-        page_size = int(request.args.get('page-size', 50))
-        offset = int(request.args.get('offset', 0))
-        actors = Actor.query.order_by(Actor.id.desc()).all()
-        actors = actors[offset:(page_size + offset)]
-        actors = [actor.format() for actor in actors]
-        return jsonify({"result": actors, "timestamp": time.time(), "success": True})
+        try:
+            page_size = int(request.args.get('page-size', 50))
+            offset = int(request.args.get('offset', 0))
+            actors = Actor.query.order_by(Actor.id.desc()).all()
+            actors = actors[offset:(page_size + offset)]
+            actors = [actor.format() for actor in actors]
+            return jsonify({"result": actors, "timestamp": time.time(), "success": True})
+        except AuthError:
+            abort(401)
 
     @app.route('/movies')
     @requires_auth('get:movies')
@@ -82,12 +85,15 @@ def create_app(test_config=None):
           200:
             description: Returns an array of Movies
         '''
-        page_size = int(request.args.get('page-size', 50))
-        offset = int(request.args.get('offset', 0))
-        movies = Movie.query.order_by(Movie.id.desc()).all()
-        movies = movies[offset:(page_size+offset)]
-        movies = [movie.format() for movie in movies]
-        return jsonify({"result": movies, "timestamp": time.time(), "success": True})
+        try:
+            page_size = int(request.args.get('page-size', 50))
+            offset = int(request.args.get('offset', 0))
+            movies = Movie.query.order_by(Movie.id.desc()).all()
+            movies = movies[offset:(page_size+offset)]
+            movies = [movie.format() for movie in movies]
+            return jsonify({"result": movies, "timestamp": time.time(), "success": True})
+        except AuthError:
+            abort(401)
 
     @app.route('/agents')
     @requires_auth('get:agents')
@@ -102,12 +108,15 @@ def create_app(test_config=None):
           200:
             description: Returns an array of Agents
         '''
-        page_size = int(request.args.get('page-size', 50))
-        offset = int(request.args.get('offset', 0))
-        agents = Agent.query.order_by(Agent.id.desc()).all()
-        agents = agents[offset:(page_size+offset)]
-        agents = [agent.format() for agent in agents]
-        return jsonify({"result": agents, "timestamp": time.time(), "success": True})
+        try:
+            page_size = int(request.args.get('page-size', 50))
+            offset = int(request.args.get('offset', 0))
+            agents = Agent.query.order_by(Agent.id.desc()).all()
+            agents = agents[offset:(page_size+offset)]
+            agents = [agent.format() for agent in agents]
+            return jsonify({"result": agents, "timestamp": time.time(), "success": True})
+        except AuthError:
+            abort(401)
 
     # GET by ID routes
 
@@ -130,11 +139,14 @@ def create_app(test_config=None):
           200:
             description: Returns a single Actor
         '''
-        actor = Actor.query.filter(Actor.id == actor_id).first()
-        if actor is None:
-            return jsonify({"timestamp": time.time(), "success": True, "result": []})
-        actor = actor.format()
-        return jsonify({"timestamp": time.time(), "success": True, "result": actor})
+        try:
+            actor = Actor.query.filter(Actor.id == actor_id).first()
+            if actor is None:
+                return jsonify({"timestamp": time.time(), "success": True, "result": []})
+            actor = actor.format()
+            return jsonify({"timestamp": time.time(), "success": True, "result": actor})
+        except AuthError:
+            abort(401)
 
     @app.route('/movies/<int:movie_id>')
     @requires_auth('get:movies')
@@ -155,11 +167,14 @@ def create_app(test_config=None):
           200:
             description: Returns a single Movie
         '''
-        movie = Movie.query.filter(Movie.id == movie_id).first()
-        if movie is None:
-            return jsonify({"timestamp": time.time(), "success": True, "result": []})
-        movie = movie.format()
-        return jsonify({"timestamp": time.time(), "success": True, "result": movie})
+        try:
+            movie = Movie.query.filter(Movie.id == movie_id).first()
+            if movie is None:
+                return jsonify({"timestamp": time.time(), "success": True, "result": []})
+            movie = movie.format()
+            return jsonify({"timestamp": time.time(), "success": True, "result": movie})
+        except AuthError:
+            abort(401)
 
     @app.route('/agents/<int:agent_id>')
     @requires_auth('get:agents')
@@ -180,11 +195,14 @@ def create_app(test_config=None):
           200:
             description: Returns a single Agent
         '''
-        agent = Agent.query.filter(Agent.id == agent_id).first()
-        if agent is None:
-            return jsonify({"timestamp": time.time(), "success": True, "result": []})
-        agent = agent.format()
-        return jsonify({"timestamp": time.time(), "success": True, "result": agent})
+        try:
+            agent = Agent.query.filter(Agent.id == agent_id).first()
+            if agent is None:
+                return jsonify({"timestamp": time.time(), "success": True, "result": []})
+            agent = agent.format()
+            return jsonify({"timestamp": time.time(), "success": True, "result": agent})
+        except AuthError:
+            abort(401)
 
     @app.route('/actors', methods=["POST"])
     @requires_auth('post:actors')
@@ -240,10 +258,10 @@ def create_app(test_config=None):
             return jsonify({"success": True, "result": actor.format(), "timestamp": time.time()}), 201
         except BadRequestException as err:
             abort(400)
+        except AuthError:
+            abort(401)
         except Exception as err:
-            print(err)
             db.session.rollback()
-            raise(err)
             return jsonify({"success": False}), 500
         finally:
             db.session.close()
@@ -269,10 +287,11 @@ def create_app(test_config=None):
             db.session.commit()
 
             return jsonify({"success": True, "result": agent.format(), "timestamp": time.time()}), 201
+        except AuthError:
+            abort(401)
         except Exception as err:
             db.session.rollback()
             return jsonify({"success": False, "error": str(err)}), 500
-
         finally:
             db.session.close()
 
@@ -296,12 +315,12 @@ def create_app(test_config=None):
 
             db.session.add(movie)
             db.session.commit()
-
             return jsonify({"success": True, "result": movie.format(), "timestamp": time.time()}), 201
+        except AuthError:
+            abort(401)
         except Exception as err:
             db.session.rollback()
             return jsonify({"success": False, "error": str(err)}), 500
-
         finally:
             db.session.close()
 
@@ -336,7 +355,8 @@ def create_app(test_config=None):
             db.session.commit()
 
             return jsonify({"success": True, "result": actor.format(), "timestamp": time.time()}), 200
-
+        except AuthError:
+            abort(401)
         except Exception as err:
             db.session.rollback()
             return jsonify({"success": False, "error": str(err)}), 500
@@ -371,7 +391,8 @@ def create_app(test_config=None):
             db.session.commit()
 
             return jsonify({"success": True, "result": agent.format(), "timestamp": time.time()}), 200
-
+        except AuthError:
+            abort(401)
         except Exception as err:
             db.session.rollback()
             return jsonify({"success": False, "error": str(err)}), 500
@@ -408,7 +429,8 @@ def create_app(test_config=None):
             db.session.commit()
 
             return jsonify({"success": True, "result": movie.format(), "timestamp": time.time()}), 200
-
+        except AuthError:
+            abort(401)
         except Exception as err:
             db.session.rollback()
             return jsonify({"success": False, "error": str(err)}), 500
@@ -425,6 +447,8 @@ def create_app(test_config=None):
                 raise BadRequestException('No actor found with ID %i' % (id))
             actor.delete()
             return jsonify({"success": True, "timestamp": time.time()}), 200
+        except AuthError:
+            abort(401)
         except BadRequestException as err:
             db.session.rollback()
             abort(400, err)
@@ -443,7 +467,8 @@ def create_app(test_config=None):
                 raise BadRequestException()
             agent.delete()
             return jsonify({"success": True, "timestamp": time.time()}), 200
-
+        except AuthError:
+            abort(401)
         except BadRequestException:
             db.session.rollback()
             abort(400)
@@ -462,7 +487,8 @@ def create_app(test_config=None):
                 raise BadRequestException()
             movie.delete()
             return jsonify({"success": True, "timestamp": time.time()}), 200
-
+        except AuthError:
+            abort(401)
         except BadRequestException:
             db.session.rollback()
             abort(400)
