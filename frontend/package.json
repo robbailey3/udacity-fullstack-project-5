@@ -25,6 +25,7 @@
     "express": "^4.17.1",
     "jwt-decode": "^2.2.0",
     "normalize.css": "^8.0.1",
+    "path": "^0.12.7",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"
