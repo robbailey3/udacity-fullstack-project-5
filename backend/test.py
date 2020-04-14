@@ -4,8 +4,8 @@ import json
 
 from flask_sqlalchemy import SQLAlchemy
 
-from models.models import setup_db
-from api import create_app
+from models import setup_db
+from app import create_app
 
 
 class CastingTests(unittest.TestCase):
@@ -14,11 +14,7 @@ class CastingTests(unittest.TestCase):
         """Define test variables and initialize app."""
         self.app = create_app()
         self.client = self.app.test_client
-        self.username = 'postgres'
-        self.password = 'password'
-        self.database_name = "capstone_test"
-        self.database_path = "postgresql://{}:{}@{}/{}".format(self.username, self.password,
-                                                               'localhost:5432', self.database_name)
+        self.database_path = os.environ['DATABASE_URL']
         setup_db(self.app, self.database_path)
 
         # binds the app to the current context
@@ -36,6 +32,18 @@ class CastingTests(unittest.TestCase):
 
     def test_root(self):
         res = self.client().get('/')
+        self.assertEqual(res.status_code, 200)
+
+    def test_get_actors(self):
+        res = self.client().get('/actors')
+        self.assertEqual(res.status_code, 200)
+
+    def test_get_movies(self):
+        res = self.client().get('/movies')
+        self.assertEqual(res.status_code, 200)
+
+    def test_get_agents(self):
+        res = self.client().get('/agents')
         self.assertEqual(res.status_code, 200)
 
         # Make the tests conveniently executable

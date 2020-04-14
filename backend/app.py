@@ -15,7 +15,7 @@ def create_app(test_config=None):
     setup_db(app)
     CORS(app, supports_credentials=True)
     SWAGGER_URL = '/docs'
-    API_URL = 'http://localhost:5000'
+    API_URL = '/'
 
     swaggerui_blueprint = get_swaggerui_blueprint(SWAGGER_URL, API_URL, config={  # Swagger UI config overrides
         'app_name': 'Capstone'
