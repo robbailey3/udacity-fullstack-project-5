@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_swagger_ui import get_swaggerui_blueprint
 from flask_cors import CORS, cross_origin
 from flask_swagger import swagger
-from .models.models import db_drop_and_create_all, setup_db, db, Actor, Agent, Movie
+from .models import db_drop_and_create_all, setup_db, db, Actor, Agent, Movie
 from .exceptions import BadRequestException
 import time
 

@@ -1,7 +1,9 @@
 <div id="agents-list" class="flex-container content-width" *ngIf="agents">
   <ng-container *ngFor="let agent of agents"
     ><app-card class="col-md-4">
-      <h2>{{ agent.name }}</h2>
+      <h2>
+        <a [routerLink]="[agent.id]">{{ agent.name }}</a>
+      </h2>
       <h3>ID: {{ agent.id }}</h3>
       <div class="agent-details">
         <p *ngIf="agent.phone_number">
