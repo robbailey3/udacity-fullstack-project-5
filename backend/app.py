@@ -6,6 +6,7 @@ from flask_cors import CORS, cross_origin
 from flask_swagger import swagger
 from models import db_drop_and_create_all, setup_db, db, Actor, Agent, Movie
 from exceptions import BadRequestException
+from auth import requires_auth
 import time
 
 
@@ -49,6 +50,7 @@ def create_app(test_config=None):
 
     # GET Routes
     @app.route('/actors')
+    @requires_auth('get:actors')
     def get_actors():
         '''
         Get all Actors
@@ -68,6 +70,7 @@ def create_app(test_config=None):
         return jsonify({"result": actors, "timestamp": time.time(), "success": True})
 
     @app.route('/movies')
+    @requires_auth('get:movies')
     def get_movies():
         '''
         Get all Movies
@@ -87,6 +90,7 @@ def create_app(test_config=None):
         return jsonify({"result": movies, "timestamp": time.time(), "success": True})
 
     @app.route('/agents')
+    @requires_auth('get:agents')
     def get_agents():
         '''
         Get all Agents
@@ -108,6 +112,7 @@ def create_app(test_config=None):
     # GET by ID routes
 
     @app.route('/actors/<int:actor_id>')
+    @requires_auth('get:actors')
     def get_actor_by_id(actor_id):
         '''
         Get a single actor by their ID
@@ -132,6 +137,7 @@ def create_app(test_config=None):
         return jsonify({"timestamp": time.time(), "success": True, "result": actor})
 
     @app.route('/movies/<int:movie_id>')
+    @requires_auth('get:movies')
     def get_movie_by_id(movie_id):
         '''
         Get a single movie by its ID
@@ -156,6 +162,7 @@ def create_app(test_config=None):
         return jsonify({"timestamp": time.time(), "success": True, "result": movie})
 
     @app.route('/agents/<int:agent_id>')
+    @requires_auth('get:agents')
     def get_agent_by_id(agent_id):
         '''
         Get a single Agent by its ID
@@ -180,6 +187,7 @@ def create_app(test_config=None):
         return jsonify({"timestamp": time.time(), "success": True, "result": agent})
 
     @app.route('/actors', methods=["POST"])
+    @requires_auth('post:actors')
     def create_new_actor():
         '''
         Create a new Actor
@@ -241,6 +249,7 @@ def create_app(test_config=None):
             db.session.close()
 
     @app.route('/agents', methods=["POST"])
+    @requires_auth('post:agents')
     def create_new_agent():
         try:
             body = request.get_json()
@@ -268,6 +277,7 @@ def create_app(test_config=None):
             db.session.close()
 
     @app.route('/movies', methods=["POST"])
+    @requires_auth('post:movies')
     def create_new_movie():
         try:
             body = request.get_json()
@@ -296,7 +306,7 @@ def create_app(test_config=None):
             db.session.close()
 
     @app.route('/actors/<int:id>', methods=["PATCH"])
-    @cross_origin()
+    @requires_auth('patch:actors')
     def update_actor(id):
         try:
             body = request.get_json()
@@ -335,6 +345,7 @@ def create_app(test_config=None):
             db.session.close()
 
     @app.route('/agents/<int:id>', methods=["PATCH"])
+    @requires_auth('patch:agents')
     def update_agent(id):
         try:
             body = request.get_json()
@@ -369,6 +380,7 @@ def create_app(test_config=None):
             db.session.close()
 
     @app.route('/movies/<int:id>', methods=["PATCH"])
+    @requires_auth('patch:movies')
     def update_movie(id):
         try:
             body = request.get_json()
@@ -405,6 +417,7 @@ def create_app(test_config=None):
             db.session.close()
 
     @app.route('/actors/<int:id>', methods=["DELETE"])
+    @requires_auth('delete:actors')
     def delete_actor(id):
         try:
             actor = Actor.query.filter(Actor.id == id).first()
@@ -422,6 +435,7 @@ def create_app(test_config=None):
             db.session.close()
 
     @app.route('/agents/<int:id>', methods=["DELETE"])
+    @requires_auth('delete:agents')
     def delete_agent(id):
         try:
             agent = Agent.query.filter(Agent.id == id).first()
@@ -440,6 +454,7 @@ def create_app(test_config=None):
             db.session.close()
 
     @app.route('/movies/<int:id>', methods=["DELETE"])
+    @requires_auth('delete:movies')
     def delete_movie(id):
         try:
             movie = Movie.query.filter(Movie.id == id).first()
