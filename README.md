@@ -28,14 +28,4 @@ This project has been created as part of the Udacity Full-Stack Developer NanoDe
 
 ## API Documentation
 
-API Documentation has been created using Swagger and can be viewed at https://fsnd-rob-backend.herokuapp.com/docs
-
-## Credentials
-
-|        Role        | Username                                 | Password   |
-| :----------------: | ---------------------------------------- | ---------- |
-| Casting Assistant  | rob.bailey3+casting-assistant@gmail.com  | Password-1 |
-|  Casting Director  | rob.bailey3+casting-director@gmail.com   | Password-1 |
-| Executive Producer | rob.bailey3+executive-producer@gmail.com | Password-1 |
-
-***note: I am aware that I shouldn't include credentials. These users will be deleted after the project is complete.***
+API Documentation has been created using Swagger.
